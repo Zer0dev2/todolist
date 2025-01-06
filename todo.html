@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>To do list</title>
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0%;
+        box-sizing: border-box;
+        font-family: Arial, Helvetica, sans-serif;
+      }
+      body {
+        background-color: rgb(18, 18, 18);
+        color: whitesmoke;
+        width: 100%;
+       height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      .container-todo {
+        background-color: #2d2d2d;
+        backdrop-filter: blur(5px);
+        padding: 20px;
+        border-radius: 10px;
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+        column-gap: 22px;
+        row-gap: 15px;
+        align-items: center;
+        box-shadow: 6px 6px 0px -1px crimson;
+      }
+      .todo-btn{
+        background: #006cff;
+    border: none;
+    padding: 6px 10px;
+    border-radius: 4px;
+    color: #f1fff1;
+    font-weight: 700;
+    text-transform: uppercase;
+    transition: all 200ms ease;
+    box-shadow: 3px 3px #f1fff1;
+    cursor: pointer;
+      }
+      .todo-btn:hover{
+        box-shadow: 0 0 0 1px #f1fff1;
+      }
+      .tolist{
+        width: 100%;
+      }
+      .todolist{
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        flex-direction: column;
+        row-gap: 7px;
+      }
+      .todolist li{
+        width: 100%;
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+    padding: 0px 5px;
+    background: #484848;
+    padding: 9px;
+    border-radius: 6px;
+      }
+      .listdel{
+        background-color: crimson;
+        color: white;
+        border: none;
+        cursor: pointer;
+        padding: 4px 5px;
+        border-radius: 5px;
+        transition: 200ms  ease-in-out all;
+      }
+      .listdel:hover{
+        transform: scale(1.05);
+      }
+      #todoinput{
+        background: #484848;
+    outline: none;
+    border: none;
+    padding: 6px;
+    margin-right: 11px;
+    border-radius: 5px;
+    color: white;
+      }
+      .line{
+        width: 100%;
+      }
+      .completed{
+        text-decoration: line-through;
+      }
+    </style>
+  </head>
+  <body>
+    <section>
+      <div class="container-todo">
+        <div class="todo-heading">
+          <h2>To do list</h2>
+        </div>
+
+        <div class="todo-search">
+         
+            <input type="text" name="todoinput" id="todoinput" placeholder="Add a new task..."/>
+            <button class="todo-btn"  id="btn">Enter</button>
+         
+        </div>
+        <hr class="line">
+        <div class="tolist">
+          <ul class="todolist" >
+            <!-- <li>
+              List 1 <span><button class="listdel">Delete</button></span>
+            </li>
+            <li>
+              List 1 <span><button class="listdel">Delete</button></span>
+            </li> -->
+          </ul>
+        </div>
+      </div>
+    </section>
+  </body>
+
+
+  <script>
+    const input = document.getElementById("todoinput")
+    const btn = document.getElementById("btn")
+    const ul = document.querySelector(".todolist")
+
+    const delBtn = document.querySelector(".listdel")
+    let tasks = []
+
+    function loadTask(){
+        const getTasks = localStorage.getItem("tasks")
+        if(getTasks){
+            tasks= JSON.parse(getTasks);
+            const loadLi = document.createElement("li")
+            tasks.map((task)=>{
+                return loadLi.innerHTML=`${task.data}<span><button class="listdel">Delete</button></span>`
+        })
+        ul.appendChild(loadLi)
+        console.log("load")
+        }
+        
+
+
+    }
+
+    function addTask(){
+        const inputTask = input.value.trim()
+        if(inputTask==""){
+            alert("please input value")
+        }
+        else{
+            const task = {
+            id: Date.now(),
+            data:inputTask,
+            status:false
+        }
+            tasks.unshift(task)
+            input.value=""
+
+            const li = document.createElement("li")
+            
+
+            console.log(inputTask)
+            console.log(tasks)
+            // tasks.map((showTask)=>{
+            //     return li.innerHTML = `${showTask.data}<span><button class="listdel">Delete</button></span>`
+            // })
+            li.innerHTML  = `${task.data}<span><button class="listdel">Delete</button></span>`
+            saveTask()
+            
+            ul.appendChild(li)
+        }
+        
+
+    }
+
+    function deleteTask(){
+        console.log("del")
+    }
+
+    btn.addEventListener("click",addTask)
+    
+    ul.addEventListener("click",(e)=>{
+        if(e.target.classList.contains("listdel")){
+            const li = e.target.closest("li")
+            ul.removeChild(li)
+        
+
+        // const taskText = li.textContent.replace()
+        const taskText = li.textContent.replace("Delete", "").trim();
+        tasks=  tasks.filter((task)=>task.data!==taskText)
+        console.log(tasks)
+        console.log(taskText)
+        saveTask()
+    }
+    })
+    
+    // save tasks 
+
+    function saveTask(){
+        localStorage.setItem("tasks",JSON.stringify(tasks))
+    }
+
+    // load tasks 
+    
+    loadTask()
+
+  </script>
+</html>
